@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateCounselorTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateCounselorLabel_counselorId}" for="counselorId" />
+                    <h:inputText id="counselorId" value="#{counselorController.selected.counselorId}" title="#{bundle.CreateCounselorTitle_counselorId}" required="true" requiredMessage="#{bundle.CreateCounselorRequiredMessage_counselorId}"/>
+                    <h:outputLabel value="#{bundle.CreateCounselorLabel_firstName}" for="firstName" />
+                    <h:inputText id="firstName" value="#{counselorController.selected.firstName}" title="#{bundle.CreateCounselorTitle_firstName}" />
+                    <h:outputLabel value="#{bundle.CreateCounselorLabel_nickName}" for="nickName" />
+                    <h:inputText id="nickName" value="#{counselorController.selected.nickName}" title="#{bundle.CreateCounselorTitle_nickName}" />
+                    <h:outputLabel value="#{bundle.CreateCounselorLabel_lastName}" for="lastName" />
+                    <h:inputText id="lastName" value="#{counselorController.selected.lastName}" title="#{bundle.CreateCounselorTitle_lastName}" />
+                    <h:outputLabel value="#{bundle.CreateCounselorLabel_telephone}" for="telephone" />
+                    <h:inputText id="telephone" value="#{counselorController.selected.telephone}" title="#{bundle.CreateCounselorTitle_telephone}" />
+                    <h:outputLabel value="#{bundle.CreateCounselorLabel_email}" for="email" />
+                    <h:inputText id="email" value="#{counselorController.selected.email}" title="#{bundle.CreateCounselorTitle_email}" />
+                    <h:outputLabel value="#{bundle.CreateCounselorLabel_memberSince}" for="memberSince" />
+                    <h:inputText id="memberSince" value="#{counselorController.selected.memberSince}" title="#{bundle.CreateCounselorTitle_memberSince}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:inputText>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{counselorController.create}" value="#{bundle.CreateCounselorSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{counselorController.prepareList}" value="#{bundle.CreateCounselorShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateCounselorIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

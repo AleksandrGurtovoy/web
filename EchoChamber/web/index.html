@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Messenger</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+    </head>
+    <body>
+        <div>
+            <input type="file" id="imageinput" multiple/>
+            <button type="button" onclick="sendImages();" >Send</button>
+        </div>
+        <div>
+            <input type="text" id="messageinput"/>
+            <button type="button" onclick="sendText();" >Send</button>
+        </div>
+        <div>
+            <button type="button" onclick="openSocket();" >Open</button>
+            <button type="button" onclick="closeSocket();" >Close</button>
+        </div>
+        <!-- Server responses get written here -->
+        <div id="messages"></div>
+        <!-- Script to utilise the WebSocket -->
+        <script type="text/javascript">
+            var webSocket;
+            var messages = document.getElementById("messages");
+            function openSocket() {
+                // Ensures only one connection is open at a time
+                if (webSocket !== undefined && webSocket.readyState !== WebSocket.CLOSED) {
+                    writeResponse("WebSocket is already opened.");
+                    return;
+                }
+                // Create a new instance of the websocket
+                webSocket = new
+                        WebSocket("ws://localhost:8080/EchoChamber/echo");
+                webSocket.onopen = function (event) {
+                    if (event.data === undefined)
+                        return;
+                    writeResponse(event.data);
+                };
+                webSocket.onmessage = function (event) {
+                    writeResponse(event.data);
+                };
+                webSocket.onclose = function (event) {
+                    messages.innerHTML += "<br/>" + "Connection closed";
+                };
+            }
+            function sendImages() {
+
+                var files = document.getElementById("imageinput").files;
+                var fileUrls = [];
+                var filesToLoad = files.length;
+
+                for (i = 0; i < files.length; i++) {
+                    (function (file) {
+                        if (file && file.type.match("image")) {
+                            var reader = new FileReader();
+                            reader.onloadend = function () {
+                                fileUrls.push(reader.result);
+                                filesToLoad--;
+                                if (filesToLoad === 0) {
+                                    json = JSON.stringify({
+                                        "type": "images",
+                                        "data": fileUrls
+                                    });
+                                    webSocket.send(json);
+                                }
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    })(files[i]);
+                }
+
+
+            }
+
+
+
+            function sendText() {
+                var json = JSON.stringify({
+                    "type": "text",
+                    "data": document.getElementById("messageinput").value
+                });
+                webSocket.send(json);
+            }
+            function closeSocket() {
+                webSocket.close();
+            }
+            function writeResponse(json) {
+                var response = JSON.parse(json);
+                var output = "";
+                // Determine the type of message recieved and han-dle accordingly
+                switch (response.type) {
+                    case "image":
+                        output = "<img src=\'" + response.data + "\'/>";
+                        break;
+                    case "images":
+                        for (i = 0; i < response.data.length; i++) {
+                            output += "<br/><img src=\'" + response.data[i] + "\'/>";
+                        }
+                        break;
+                    case "text":
+                        output = response.data;
+                        break;
+                }
+                messages.innerHTML += "<br/>"
+                        + output;
+            }
+        </script>
+    </body>
+</html>

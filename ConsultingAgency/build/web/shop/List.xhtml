@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListShopTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundle.ListShopEmpty}" rendered="#{shopController.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{shopController.items.rowCount > 0}">
+                    <h:outputText value="#{shopController.pagination.pageFirstItem + 1}..#{shopController.pagination.pageLastItem + 1}/#{shopController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{shopController.previous}" value="#{bundle.Previous} #{shopController.pagination.pageSize}" rendered="#{shopController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{shopController.next}" value="#{bundle.Next} #{shopController.pagination.pageSize}" rendered="#{shopController.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{shopController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListShopTitle_shopPK_dealer}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.shopPK.dealer}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListShopTitle_shopPK_article}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.shopPK.article}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListShopTitle_price}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.price}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{shopController.prepareView}" value="#{bundle.ListShopViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{shopController.prepareEdit}" value="#{bundle.ListShopEditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{shopController.destroy}" value="#{bundle.ListShopDestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{shopController.prepareCreate}" value="#{bundle.ListShopCreateLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ListShopIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>
